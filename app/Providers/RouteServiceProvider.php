@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
-use App\Popup;
-
 class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -27,7 +25,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         //
-        $router->pattern('popup', Popup::NAME_REGEX);
+        $router->pattern('popup', config('popup.regex'));
 
         parent::boot($router);
     }

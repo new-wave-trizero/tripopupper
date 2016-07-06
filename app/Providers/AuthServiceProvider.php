@@ -26,6 +26,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies($gate);
 
-        //
+        $gate->define('manage-popup', function ($user, $popup) {
+            return $user->id === $popup->user_id;
+        });
     }
 }
