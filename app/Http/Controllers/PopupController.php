@@ -38,9 +38,10 @@ class PopupController extends Controller
      */
     public function showPopupsList(Request $request)
     {
-        return view('popup.list', [
-            'popups' => $request->user()->popups,
-        ]);
+        $popups = $request->user()
+            ->popups()->orderBy('id', 'desc')->get();
+
+        return view('popup.list', compact('popups'));
     }
 
     /**
