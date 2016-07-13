@@ -7,6 +7,6 @@ body {
   font-weight: normal;
   padding: 5px 0px;
   margin: 0px;
-  display: block;
+  display: inline-block;
   text-align: left;
 }

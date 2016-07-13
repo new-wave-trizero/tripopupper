@@ -48,6 +48,7 @@
 </script>
 
 <script src="/js/tripopupper.js"></script>
+<script src="{{ config('popup.js_lib_url') }}"></script>
 
 </body>
 </html>

@@ -4,6 +4,7 @@ namespace App\Services\AwesomeNamesMaker;
 
 use Illuminate\Cache\Repository as LaravelCache;
 
+#TODO: Rename to awesome name suggert or something like that
 class AwesomeNamesMaker
 {
     public function __construct(LaravelCache $cache)
@@ -12,6 +13,12 @@ class AwesomeNamesMaker
     }
 
     public function makeAwesomeName()
+    {
+        $client = new \GuzzleHttp\Client(['base_uri' => 'http://pokeapi.co/api/v2/']);
+
+    }
+
+    public function makeAwesomeNamePokemon()
     {
         list($pokemons, $colors, $natures) = $this->cache->rememberForever('awesome-stuff', function() {
             return $this->getAwesomeStuff();

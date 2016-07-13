@@ -11,9 +11,10 @@ return [
     // Reserved popup names
     'reserverd' => [
         'trizero',
-        'suggest',
-        'GiovaAkaFumello',
-        'skaffo',
+        'popup',
     ],
+
+    // Url of client js lib
+    'js_lib_url' => 'https://rawgit.com/new-wave-trizero/tripopupper-js/master/lib/tripopupper.js',
 
 ];

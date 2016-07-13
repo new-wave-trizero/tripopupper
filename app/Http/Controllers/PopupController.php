@@ -47,14 +47,15 @@ class PopupController extends Controller
     /**
      * Validation rule of popup name.
      *
+     * @param  \App\Popup $popup
      * @return string
      */
-    protected function popupNameRule()
+    protected function popupNameRule($popup = null)
     {
         return [
             'required',
             'max:' . config('popup.maxlen'),
-            'unique:popups',
+            'unique:popups,name' . is_null($popup) ? '' : ',' . $popup->id,
             'regex:/' . config('popup.regex') . '/',
             'not_in:' . implode(config('popup.reserverd'), ','),
         ];
@@ -112,46 +113,36 @@ class PopupController extends Controller
         $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't edit popup
-        if (Gate::denies('manage-popup', $popup)) {
-            abort(403);
-        }
+        $this->authorize('manage-popup', $popup);
 
         return view('popup.edit', compact('popup'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update popup.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  string  $name
      * @return \Illuminate\Http\Response
      */
-    //public function storePopup(Request $request)
-    //{
-        //$this->validate($request, [
-            //'name'   => ['required', 'max:100', 'unique:popups', 'regex:/'.Popup::NAME_REGEX.'/'],
-            //'config' => 'required|json',
-            //'domain' => 'required|max:255',
-        //]);
+    public function updatePopup(Request $request, $name)
+    {
+        $popup = Popup::whereName($name)->firstOrFail();
 
-        //$popup = new Popup($request->only('domain', 'name'));
-        //$popup->config = (object)json_decode($request->get('config'), true);
-        //$request->user()->popups()->save($popup);
+        // Can't update popup
+        $this->authorize('manage-popup', $popup);
 
-        //return redirect("popup/{$popup->name}");
-    //}
+        $this->validate($request, [
+            'config'  => 'required|json',
+            'domain'  => 'required|max:100',
+        ]);
 
+        $popup->fill($request->only('domain'));
+        $popup->config = json_decode($request->get('config'), true);
+        $popup->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    ////public function update(Request $request, $id)
-    ////{
-        //////
-    ////}
+        return redirect("popup/{$popup->name}");
+    }
 
     /**
      * Remove popup.
@@ -161,17 +152,10 @@ class PopupController extends Controller
      */
     public function destroyPopup($name)
     {
-        $popup = Popup::whereName($name)->first();
-
-        // Poup doesn't exist anymore, back to home...
-        if (is_null($popup)) {
-            return redirect('/');
-        }
+        $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't remove popup
-        if (Gate::denies('manage-popup', $popup)) {
-            abort(403);
-        }
+        $this->authorize('manage-popup', $popup);
 
         $popup->delete();
 
