@@ -10,6 +10,7 @@
     "bootstrap-sass": "^3.3.0"
   },
   "dependencies": {
+    "clipboard": "^1.5.12",
     "json-editor": "^0.7.27",
     "lodash": "^4.13.1"
   }

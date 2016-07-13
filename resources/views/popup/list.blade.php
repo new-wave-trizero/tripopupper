@@ -5,19 +5,18 @@
 <form method="POST" action="/popup" novalidate>
   {{ csrf_field() }}
   <div class="form-group label-floating{{ $errors->has('name') ? ' has-error' : '' }}">
-    <label class="control-label">Name o random</label>
+    <label class="control-label">Name or Random ~</label>
     <input type="text" class="form-control" name="name" value="{{ old('name') }}" />
     <span class="help-block">{{ $errors->first('name') }}</span>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" style="margin-top: 2px">
   <button type="submit" class="btn btn-default btn-raised">
-    Crea poppup
+    Nuovo popup
   </button>
   </div>
 </form>
 
-<br />
 <br />
 <br />
 
@@ -25,11 +24,14 @@
   @foreach($popups as $popup)
     <div class="list-group-item">
       <div class="row-picture">
-        <img class="circle" alt="icon">
+        <img class="circle" src="{{ $popup->config['imageUrl'] or null }}">
       </div>
       <div class="row-content">
         <div class="action-secondary">
           <div class="btn-group-sm">
+            <a href="/popup/{{ $popup->name }}" class="btn btn-info btn-fab btn-fab-mini">
+              <i class="material-icons">mode_edit</i>
+            </a>
             <button
               class="btn btn-success btn-fab btn-fab-mini inline-popup-launcher"
               data-config='{!! json_encode($popup->config) !!}'>
@@ -42,9 +44,7 @@
             </form>
           </div>
         </div>
-        <a class="btn btn-link-list-item" href="/popup/{{ $popup->name }}">
         <h4 class="list-group-item-heading">{{ $popup->name }}</h4>
-        </a>
         <p class="list-group-item-text">
           <div>{{ $popup->domain }}&nbsp;</div>
         </p>

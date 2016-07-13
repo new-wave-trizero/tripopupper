@@ -41,7 +41,7 @@
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Material Design for Bootstrap -->
-<script src="/material/js/material.js"></script>
+<script src="/material/js/material.min.js"></script>
 <script src="/material/js/ripples.min.js"></script>
 <script>
   $.material.init();

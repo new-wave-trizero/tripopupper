@@ -1,10 +1,13 @@
 import 'json-editor';
-import { isEmpty } from 'lodash';
+import { isEmpty, defaults, keys, pick } from 'lodash';
+import Clipboard from 'clipboard';
+
+// Set up clippboard
+new Clipboard('.btn-clipboard');
 
 // Inline popup launcher buttom
 $(document).on('click', '.inline-popup-launcher', function(e) {
   e.preventDefault();
-  console.log($(this).data('config'));
   tripopupper.run($(this).data('config'));
 });
 
@@ -14,9 +17,18 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(element => {
 
   // Set up json editor...
 
+  // NOT A SINGLE FUCK WAS GIVEN IN THAT DAY!
+  const defaultizeJson = (json) => {
+    const defaultJson = {
+      title: '',
+      imageUrl: '',
+      overlay: true,
+    };
+    return pick(defaults(json, defaultJson), keys(defaultJson));
+  };
   const editorContainer = document.getElementById('popup-config-editor');
   const json = $(editorContainer).data('json');
-  const startval = isEmpty(json) ? null : json;
+  const startval = isEmpty(json) ? null : defaultizeJson(json);
 
   const editor = new JSONEditor(editorContainer, {
     theme: 'bootstrap3',
@@ -25,7 +37,7 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(element => {
     disable_properties: true,
     startval,
     schema: {
-      title: 'Popup Config',
+      title: 'Configura Popup',
       type: 'object',
       properties: {
         title: {
@@ -35,6 +47,11 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(element => {
         imageUrl: {
           type: 'string',
           title: 'URL Immagine',
+        },
+        overlay: {
+          type: 'boolean',
+          title: 'Background Transparente',
+          format: 'checkbox',
         },
       }
     }
@@ -52,6 +69,9 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(element => {
     $input.val(JSON.stringify(editor.getValue()));
 
   editor.on('change', fillInputWithJson);
+  editor.on('ready', () => {
+    $.material.init('$popup-form');
+  });
 
   $form.on('submit', e => {
     const errors = editor.validate();
@@ -63,6 +83,16 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(element => {
     }
 
     return isValid;
+  });
+
+  // Keyboard tricks...
+  $(document).on('keydown', e => {
+    const tag = e.target.tagName.toLowerCase();
+
+    // Press spacebar but not when edit stuff...
+    if (e.keyCode === 32 && tag !== 'input' && tag !== 'textarea' && tag !== 'checkbox') {
+      tripopupper.run(editor.getValue());
+    }
   });
 
   // Popup launcher...
