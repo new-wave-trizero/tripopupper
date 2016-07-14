@@ -25186,40 +25186,28 @@ module.exports = E;
 },{}],12:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 require('json-editor');
 
 var _lodash = require('lodash');
 
-var _clipboard = require('clipboard');
-
-var _clipboard2 = _interopRequireDefault(_clipboard);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Set up clippboard
-new _clipboard2.default('.btn-clipboard');
-
-// Inline popup launcher buttom
-$(document).on('click', '.inline-popup-launcher', function (e) {
-  e.preventDefault();
-  tripopupper.run($(this).data('config'));
-});
-
-// Popup edit...
-Array.from(document.getElementsByClassName('edit-popup')).forEach(function (element) {
-  // Start the vanilla odissea
-
-  // Set up json editor...
-
-  // NOT A SINGLE FUCK WAS GIVEN IN THAT DAY!
-  var defaultizeJson = function defaultizeJson(json) {
-    var defaultJson = {
-      title: '',
-      imageUrl: '',
-      overlay: true
-    };
-    return (0, _lodash.pick)((0, _lodash.defaults)(json, defaultJson), (0, _lodash.keys)(defaultJson));
+// Defaultize json from laravel to json editor
+var defaultizeJson = function defaultizeJson(json) {
+  var defaultJson = {
+    title: '',
+    imageUrl: '',
+    overlay: true
   };
+  return (0, _lodash.pick)((0, _lodash.defaults)(json, defaultJson), (0, _lodash.keys)(defaultJson));
+};
+
+function popupEditPage(element) {
+
+  // Set up JSON editor for popup config...
+
   var editorContainer = document.getElementById('popup-config-editor');
   var json = $(editorContainer).data('json');
   var startval = (0, _lodash.isEmpty)(json) ? null : defaultizeJson(json);
@@ -25240,16 +25228,23 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(function (elem
         },
         imageUrl: {
           type: 'string',
-          title: 'URL Immagine'
+          title: 'URL Immagine',
+          format: 'url'
         },
         overlay: {
           type: 'boolean',
           title: 'Background Transparente',
-          format: 'checkbox'
+          format: 'checkbox',
+          default: true
         }
       }
     }
   });
+
+  // Show popup using current editor configuration
+  var showPopup = function showPopup() {
+    return tripopupper.run(editor.getValue());
+  };
 
   // Hook form...
 
@@ -25265,7 +25260,7 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(function (elem
 
   editor.on('change', fillInputWithJson);
   editor.on('ready', function () {
-    $.material.init('$popup-form');
+    $.material.init('#popup-form');
   });
 
   $form.on('submit', function (e) {
@@ -25280,22 +25275,51 @@ Array.from(document.getElementsByClassName('edit-popup')).forEach(function (elem
     return isValid;
   });
 
+  // Local popup launcher with current editor conf...
+  $('#popup-launcher').on('click', function () {
+    return showPopup();
+  });
+
   // Keyboard tricks...
   $(document).on('keydown', function (e) {
     var tag = e.target.tagName.toLowerCase();
 
     // Press spacebar but not when edit stuff...
     if (e.keyCode === 32 && tag !== 'input' && tag !== 'textarea' && tag !== 'checkbox') {
-      tripopupper.run(editor.getValue());
+      showPopup();
     }
   });
+}
 
-  // Popup launcher...
-  $('#popup-launcher').on('click', function () {
-    tripopupper.run(editor.getValue());
-  });
+exports.default = popupEditPage;
+
+},{"json-editor":7,"lodash":8}],13:[function(require,module,exports){
+'use strict';
+
+var _clipboard = require('clipboard');
+
+var _clipboard2 = _interopRequireDefault(_clipboard);
+
+var _popupEditPage = require('./popup-edit-page');
+
+var _popupEditPage2 = _interopRequireDefault(_popupEditPage);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Welcome to vanilla paradise!
+
+// Set up global clippboard button
+new _clipboard2.default('.btn-clipboard');
+
+// Inline popup launcher buttom
+$(document).on('click', '.inline-popup-launcher', function (e) {
+  e.preventDefault();
+  tripopupper.run($(this).data('config'));
 });
 
-},{"clipboard":2,"json-editor":7,"lodash":8}]},{},[12]);
+// Popup edit page...
+Array.from(document.getElementsByClassName('edit-popup-page')).forEach(_popupEditPage2.default);
+
+},{"./popup-edit-page":12,"clipboard":2}]},{},[13]);
 
 //# sourceMappingURL=tripopupper.js.map

@@ -41,7 +41,9 @@ class PopupController extends Controller
         $popups = $request->user()
             ->popups()->orderBy('id', 'desc')->get();
 
-        return view('popup.list', compact('popups'));
+        $suggestedName = $this->suggestPopupName();
+
+        return view('popup.list', compact('popups', 'suggestedName'));
     }
 
     /**
@@ -83,23 +85,16 @@ class PopupController extends Controller
      */
     public function storePopup(Request $request)
     {
-        if (!$request->has('name') || $request->get('name') === '') {
-            // When name is not given, we generate a random awesome name on the fly!
-            $name = $this->suggestPopupName();
-        } else {
-            // Otherwise check and use the given user name
-            $this->validate($request, [
-                'name' => $this->popupNameRule()
-            ]);
-            $name = $request->get('name');
-        }
+        $this->validate($request, [
+            'name' => $this->popupNameRule()
+        ]);
 
         $popup = $request->user()->popups()->create([
-            'name'   => $name,
+            'name'   => $request->get('name'),
             'config' => (object)[], // aka {}
         ]);
 
-        return redirect("popup/{$name}");
+        return redirect("popup/{$popup->name}");
     }
 
     /**
@@ -143,6 +138,16 @@ class PopupController extends Controller
 
         return redirect("popup/{$popup->name}");
     }
+
+    // POST /popup/{name}/upload-image
+    //public function uploadImage(Request $request, $name)
+    //{
+        //$popup = Popup::whereName($name)->firstOrFail();
+
+        //// Can't upload image related to popup
+        //$this->authorize('manage-popup', $popup);
+
+    //}
 
     /**
      * Remove popup.

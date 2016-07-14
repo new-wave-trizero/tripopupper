@@ -1,16 +1,16 @@
 @extends('layouts.material')
 
 @section('content')
-<div class="edit-popup">
+<div class="edit-popup-page">
 <div class="row">
   <div class="col-md-10">
     <h4>Modifica popup <strong>{{ $popup->name }}</strong></h4>
   </div>
   <div class="col-md-2" style="text-align: right">
     <div class="btn-group-sm">
-      <a href="/" class="btn btn-fab btn-fab-mini"><i class="material-icons">list</i></a>
+      <a href="{{ url('/') }}" class="btn btn-fab btn-fab-mini"><i class="material-icons">list</i></a>
       <button class="btn btn-success btn-fab btn-fab-mini" id="popup-launcher"><i class="material-icons">launch</i></button>
-      <form style="display:inline" method="POST" action="/popup/{{ $popup->name }}">
+      <form style="display:inline" method="POST" action="{{ url('/popup/' . $popup->name) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
         <button class="btn btn-danger btn-fab btn-fab-mini"><i class="material-icons">delete</i></button>
@@ -30,7 +30,7 @@
 <br />
 <br />
 
-<form method="POST" action="/popup/{{ $popup->name }}" id="popup-form" novalidate>
+<form method="POST" action="{{ url('/popup/' . $popup->name) }}" id="popup-form" novalidate>
   <div class="well well-sm">
   {{ csrf_field() }}
   {{ method_field('PUT') }}

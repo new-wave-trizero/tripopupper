@@ -12,13 +12,13 @@ class AwesomeNamesMaker
         $this->cache = $cache;
     }
 
+    //public function makeAwesomeName()
+    //{
+        //$client = new \GuzzleHttp\Client(['base_uri' => 'http://pokeapi.co/api/v2/']);
+
+    //}
+
     public function makeAwesomeName()
-    {
-        $client = new \GuzzleHttp\Client(['base_uri' => 'http://pokeapi.co/api/v2/']);
-
-    }
-
-    public function makeAwesomeNamePokemon()
     {
         list($pokemons, $colors, $natures) = $this->cache->rememberForever('awesome-stuff', function() {
             return $this->getAwesomeStuff();
