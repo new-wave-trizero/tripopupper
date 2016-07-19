@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use Gate;
 use App\Http\Requests;
-use App\Services\AwesomeNamesMaker\AwesomeNamesMaker;
+use App\Services\AwesomeNamesSuggestor\AwesomeNamesSuggestor;
 use App\Popup;
 
 class PopupController extends Controller
@@ -14,19 +14,19 @@ class PopupController extends Controller
     /**
      * Make awesome names
      *
-     * @var \App\Services\AwesomeNamesMaker\AwesomeNamesMaker
+     * @var \App\Services\AwesomeNamesSuggestor\Suggestor
      */
-    protected $nameMaker;
+    protected $namesSuggestor;
 
     /**
      * Create a new controller instance.
      *
-     * @param  \App\Services\AwesomeNamesMaker\AwesomeNamesMaker $nameMaker
+     * @param  \App\Services\AwesomeNamesSuggestor\AwesomeNamesSuggestor $awesomeNamesSuggestor
      * @return void
      */
-    public function __construct(AwesomeNamesMaker $nameMaker)
+    public function __construct(AwesomeNamesSuggestor $awesomeNamesSuggestor)
     {
-        $this->nameMaker = $nameMaker;
+        $this->namesSuggestor = $awesomeNamesSuggestor->suggestor(config('popup.suggestor'));
         $this->middleware('auth');
     }
 
@@ -66,15 +66,18 @@ class PopupController extends Controller
     /**
      * Suggest an awesome new popup name.
      *
-     * @return string
+     * @return string|null
      */
     protected function suggestPopupName()
     {
-        do {
-            $name = $this->nameMaker->makeAwesomeName();
-        } while(! is_null(Popup::whereName($name)->first()));
-
-        return $name;
+        try {
+            return $this->namesSuggestor->suggestFreshRandomName(function ($name) {
+                return Popup::whereName($name)->count() === 0; // A new name is always fresh!
+            });
+        } catch (\Exception $e) {
+            // TODO: Better error handling...
+            return null;
+        }
     }
 
     /**
