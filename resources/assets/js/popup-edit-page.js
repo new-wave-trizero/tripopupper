@@ -7,6 +7,9 @@ const defaultizeJson = (json) => {
     title: '',
     imageUrl: '',
     overlay: true,
+    start: '',
+    end: '',
+    delay: 0,
   };
   return pick(defaults(json, defaultJson), keys(defaultJson));
 };
@@ -37,6 +40,20 @@ function popupEditPage(element) {
           type: 'string',
           title: 'URL Immagine',
           format: 'url',
+        },
+        start: {
+          type: 'string',
+          format: 'date',
+          title: 'Da',
+        },
+        end: {
+          type: 'string',
+          format: 'date',
+          title: 'A',
+        },
+        delay: {
+          type: 'number',
+          title: 'Ritardo (secondi)',
         },
         overlay: {
           type: 'boolean',
