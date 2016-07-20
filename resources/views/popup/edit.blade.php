@@ -1,5 +1,9 @@
 @extends('layouts.material')
 
+@section('subtitle')
+  {{ $popup->name }} -
+@endsection
+
 @section('content')
 <div class="edit-popup-page">
 <div class="row">
