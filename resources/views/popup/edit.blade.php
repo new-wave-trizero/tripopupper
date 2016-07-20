@@ -10,6 +10,10 @@
     <div class="btn-group-sm">
       <a href="{{ url('/') }}" class="btn btn-fab btn-fab-mini"><i class="material-icons">list</i></a>
       <button class="btn btn-success btn-fab btn-fab-mini" id="popup-launcher"><i class="material-icons">launch</i></button>
+      <a href="{{ url('/api/popup/' . $popup->name) }}"
+        class="btn btn-primary btn-fab btn-fab-mini" target="blank">
+        <i class="material-icons">code</i>
+      </a>
       <form style="display:inline" method="POST" action="{{ url('/popup/' . $popup->name) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}

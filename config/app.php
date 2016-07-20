@@ -158,6 +158,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Dingo\Api\Provider\LaravelServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
+
     ],
 
     /*
@@ -203,6 +206,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'API' => Dingo\Api\Facade\API::class,
+        'APIRoute' => Dingo\Api\Facade\Route::class,
 
     ],
 

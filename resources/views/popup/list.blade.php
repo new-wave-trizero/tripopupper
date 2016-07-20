@@ -37,6 +37,10 @@
               data-config='{!! json_encode($popup->config) !!}'>
               <i class="material-icons">launch</i>
             </button>
+            <a href="{{ url('/api/popup/' . $popup->name) }}"
+              class="btn btn-primary btn-fab btn-fab-mini" target="blank">
+              <i class="material-icons">code</i>
+            </a>
             <form style="display:inline" method="POST" action="{{ url('/popup/'. $popup->name) }}">
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
