@@ -29,9 +29,15 @@
 <br />
 
 <div>Includi questo codice alla fine della tua pagina web, prima della fine del tag <code>{{ '</body>' }}</code>:</div>
-<pre style="border-radius: 0">
-<code id="popup-embedded-snippet">{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."')</script>" }}</code>
-</pre>
+<div id="popup-embedded-snippet">
+<pre style="border-radius: 0" data-debug="0"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."')</script>" }}</code></pre>
+<pre style="border-radius: 0;display:none" data-debug="1"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."', true)</script>" }}</code></pre>
+</div>
+<div class="togglebutton">
+  <label>
+    <input type="checkbox" id="popup-snippet-debug-mode-toggle"> Debug Mode
+  </label>
+</div>
 <button
   class="btn btn-raised btn-default btn-clipboard"
   data-clipboard-target="#popup-embedded-snippet"> <i class="material-icons">content_copy</i>  Copia</button>

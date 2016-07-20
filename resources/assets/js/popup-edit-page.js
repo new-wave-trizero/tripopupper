@@ -80,6 +80,13 @@ function popupEditPage(element) {
     return isValid;
   });
 
+  // Toggle debug mode in snippet
+  $('#popup-snippet-debug-mode-toggle').on('change', function () {
+    const isInDebugMode = $(this).is(':checked');
+    $('#popup-embedded-snippet').find(`[data-debug='0']`).toggle(!isInDebugMode);
+    $('#popup-embedded-snippet').find(`[data-debug='1']`).toggle(isInDebugMode);
+  });
+
   // Local popup launcher with current editor conf...
   $('#popup-launcher').on('click', () => showPopup());
 
