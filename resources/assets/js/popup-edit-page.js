@@ -1,18 +1,9 @@
 import 'json-editor';
-import { isEmpty, defaults, keys, pick } from 'lodash';
+import { merge } from 'lodash';
 
 // Defaultize json from laravel to json editor
-const defaultizeJson = (json) => {
-  const defaultJson = {
-    title: '',
-    imageUrl: '',
-    overlay: true,
-    start: '',
-    end: '',
-    delay: 0,
-  };
-  return pick(defaults(json, defaultJson), keys(defaultJson));
-};
+const defaultizeJson = (emptyEditorValue, json) =>
+  merge(emptyEditorValue, json);
 
 function popupEditPage(element) {
 
@@ -20,14 +11,12 @@ function popupEditPage(element) {
 
   const editorContainer = document.getElementById('popup-config-editor');
   const json = $(editorContainer).data('json');
-  const startval = isEmpty(json) ? null : defaultizeJson(json);
 
   const editor = new JSONEditor(editorContainer, {
     theme: 'bootstrap3',
     disable_collapse: true,
     disable_edit_json: true,
     disable_properties: true,
-    startval,
     schema: {
       title: 'Configura Popup',
       type: 'object',
@@ -61,9 +50,20 @@ function popupEditPage(element) {
           format: 'checkbox',
           default: true,
         },
+        experimental: {
+          type: 'object',
+          title: 'Funzioni Sperimentali',
+          properties: {
+            qandoShop: {
+              type: 'string',
+              title: 'Qando Shop',
+            }
+          }
+        }
       }
     }
   });
+  editor.setValue(defaultizeJson(editor.getValue(), json));
 
   // Show popup using current editor configuration
   const showPopup = () =>
