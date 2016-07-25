@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Storage;
 use Gate;
 use App\Http\Requests;
 use App\Services\AwesomeNamesSuggestor\AwesomeNamesSuggestor;
@@ -142,15 +143,68 @@ class PopupController extends Controller
         return redirect("popup/{$popup->name}");
     }
 
-    // POST /popup/{name}/upload-image
-    //public function uploadImage(Request $request, $name)
-    //{
-        //$popup = Popup::whereName($name)->firstOrFail();
+    /**
+     * Upload image related to popup.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $name
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadImage(Request $request, $name)
+    {
+        $popup = Popup::whereName($name)->firstOrFail();
 
-        //// Can't upload image related to popup
-        //$this->authorize('manage-popup', $popup);
+        // Can't upload image related to popup
+        $this->authorize('manage-popup', $popup);
 
-    //}
+        $this->validate($request, [
+            'image'  => 'required|image',
+        ]);
+
+        // Use public disk
+        $disk = Storage::disk('public');
+
+        // TODO: divide et impera
+        // Write file with an unique random name
+        $stream = fopen($request->file('image')->getRealPath(), 'r+');
+        $fileName = str_random(10) . '-' . microtime(true) . '.' . $request->file('image')->guessExtension();
+        $disk->writeStream("popup/{$popup->name}/${fileName}", $stream);
+        fclose($stream);
+
+        // Take only the last N upload images...
+        $take = config('popup.images.take_last');
+        $images =
+            // List files in popup directory
+            collect($disk->files("popup/{$popup->name}"))
+            // Take only the images
+            ->filter(function ($file) use ($disk) {
+                return substr($disk->getMimeType($file), 0, 5) == 'image';
+            })
+            // Order files by timestamp
+            ->sortBy(function ($file) {
+                return (int)explode('-', pathinfo($file)['filename'])[1];
+            })
+            // [un, dos, tres] no broken keys
+            ->values();
+
+        // Take the last N
+        $lastNImages = $images->take(-$take);
+
+        // TODO: Make the images related to popup configurable...
+        // Push current selected images to taken images...
+        if (!is_null($popup->config) && isset($popup->config['imageUrl'])) {
+            $lastNImages->push(str_replace(asset('/storage').'/', '', (string)$popup->config['imageUrl']));
+        }
+
+        // Mantein only the last N uploaded images and current images
+        $disk->delete($images->diff($lastNImages)->all());
+
+        // Response different by request
+        if ($request->wantsJson()) {
+            return response()->json(asset("storage/popup/{$popup->name}/{$fileName}"));
+        }
+        return redirect("popup/{$popup->name}");
+    }
 
     /**
      * Remove popup.
@@ -166,6 +220,9 @@ class PopupController extends Controller
         $this->authorize('manage-popup', $popup);
 
         $popup->delete();
+
+        // Delete popup upload dir
+        Storage::disk('public')->deleteDirectory("popup/{$popup->name}");
 
         return redirect('/');
     }

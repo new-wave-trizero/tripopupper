@@ -17,6 +17,12 @@ return [
     // Url of client js lib
     'js_lib_url' => 'https://rawgit.com/new-wave-trizero/tripopupper-js/master/lib/tripopupper.js',
 
+    // Images config
+    'images' => [
+        // Take the last N
+        'take_last' => 10,
+    ],
+
     // The suggestor config
     'suggestor' => [
         'groups' => [
