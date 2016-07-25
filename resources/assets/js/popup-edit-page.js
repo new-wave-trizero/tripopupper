@@ -1,4 +1,6 @@
+// Sadly json-editor export JSONEditor to window istead of UMD...
 import 'json-editor';
+import laravelConfig from './laravel-config';
 import { merge } from 'lodash';
 
 // Defaultize json from laravel to json editor
@@ -8,12 +10,50 @@ const defaultizeJson = (emptyEditorValue, json) =>
 function popupEditPage(element) {
 
   // Set up JSON editor for popup config...
-
   const editorContainer = document.getElementById('popup-config-editor');
   const json = $(editorContainer).data('json');
+  const popup = $(editorContainer).data('popup');
+
+  // Upload image related to popup
+  JSONEditor.defaults.options.upload = function(type, file, cbs) {
+    const data = new FormData();
+    data.append('image', file);
+
+    $.ajax({
+      type: 'POST',
+      url: `${laravelConfig.app_url}/popup/${popup.name}/upload-image`,
+      // TODO: I have no idea if this shitty code really work...
+      xhr: function() {
+        const myXhr = $.ajaxSettings.xhr();
+        if (myXhr.upload) {
+          myXhr.upload.addEventListener('progress',progress, false);
+        }
+        return myXhr;
+      },
+      processData: false,
+      contentType: false,
+      dataType: 'json',
+      data,
+    })
+    .done((url) => {
+      cbs.success(url);
+    })
+    .fail(() => cbs.failure('Errore nell\'upload del file'));
+
+    // Notify progress to json editor
+    function progress(e) {
+      if (e.lengthComputable) {
+        const max = e.total;
+        const current = e.loaded;
+
+        const percentage = (current * 100) / max;
+        cbs.updateProgress(percentage);
+      }
+    }
+  };
 
   const editor = new JSONEditor(editorContainer, {
-    theme: 'bootstrap3',
+    theme: 'html',
     disable_collapse: true,
     disable_edit_json: true,
     disable_properties: true,
@@ -25,10 +65,24 @@ function popupEditPage(element) {
           type: 'string',
           title: 'Titolo',
         },
+        //imageUrl: {
+          //type: 'string',
+          //title: 'URL Immagine',
+          //format: 'url',
+        //},
         imageUrl: {
           type: 'string',
           title: 'URL Immagine',
           format: 'url',
+          options: {
+            upload: true
+          },
+          links: [
+            {
+              'href': '{{self}}',
+              'rel': 'view'
+            }
+          ]
         },
         start: {
           type: 'string',

@@ -57,7 +57,10 @@
     </div>
   </div>
 
-  <div id="popup-config-editor" data-json='{!! old('config', json_encode($popup->config)) !!}'></div>
+  <div
+    id="popup-config-editor"
+    data-popup='{!! json_encode(array_except($popup->toArray(), 'config')) !!}'
+    data-json='{!! old('config', json_encode($popup->config)) !!}'></div>
 
   </div>
   <button type="submit" class="btn btn-default btn-raised">Salva</button>

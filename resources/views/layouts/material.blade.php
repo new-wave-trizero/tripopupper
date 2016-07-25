@@ -55,6 +55,9 @@
   @yield('content')
 </div>
 
+<script>
+  window.laravel = {!! json_encode($laravelJsVars) !!};
+</script>
 <!-- Twitter Bootstrap -->
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
