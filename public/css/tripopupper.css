@@ -10,3 +10,7 @@ body {
   display: inline-block;
   text-align: left;
 }
+
+.upload-image-preview img {
+  padding-top: 5px;
+}

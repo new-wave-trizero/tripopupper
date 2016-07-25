@@ -14,6 +14,58 @@ function popupEditPage(element) {
   const json = $(editorContainer).data('json');
   const popup = $(editorContainer).data('popup');
 
+  // See: https://github.com/jdorn/json-editor/blob/master/src/editors/upload.js
+  // Extend json-editor default upload UI behaviour...
+  JSONEditor.defaults.editors.upload = JSONEditor.defaults.editors.upload.extend({
+    build: function() {
+      var self = this;
+      this.title = this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+
+      // Input that holds the base64 string
+      this.input = this.theme.getFormInputField('hidden');
+      this.container.appendChild(this.input);
+
+      // Don't show uploader if this is readonly
+      if(!this.schema.readOnly && !this.schema.readonly) {
+
+        if(!this.jsoneditor.options.upload) throw "Upload handler required for upload editor";
+
+        // File uploader
+        this.uploader = this.theme.getFormInputField('file');
+
+        this.uploader.addEventListener('change',function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if(this.files && this.files.length) {
+            var fr = new FileReader();
+            fr.onload = function(evt) {
+              self.preview_value = evt.target.result;
+              self.refreshPreview();
+              self.onChange(true);
+              fr = null;
+            };
+            fr.readAsDataURL(this.files[0]);
+          }
+        });
+      }
+
+      var description = this.schema.description;
+      if (!description) description = '';
+
+      this.control = this.theme.getFormControl(this.label, this.uploader||this.input);
+      this.container.appendChild(this.control);
+
+      this.preview = this.getPreview();
+      this.container.appendChild(this.preview);
+    },
+    getPreview: function() {
+      var el = document.createElement('div');
+      el.className = 'upload-image-preview';
+      return el;
+    }
+  });
+
   // Upload image related to popup
   JSONEditor.defaults.options.upload = function(type, file, cbs) {
     const data = new FormData();
@@ -38,6 +90,7 @@ function popupEditPage(element) {
     .done((url) => {
       cbs.success(url);
     })
+    // TODO: Error wont work fix-it!
     .fail(() => cbs.failure('Errore nell\'upload del file'));
 
     // Notify progress to json editor
@@ -53,7 +106,7 @@ function popupEditPage(element) {
   };
 
   const editor = new JSONEditor(editorContainer, {
-    theme: 'html',
+    theme: 'bootstrap3',
     disable_collapse: true,
     disable_edit_json: true,
     disable_properties: true,
@@ -63,24 +116,21 @@ function popupEditPage(element) {
       properties: {
         title: {
           type: 'string',
+          description: 'Titolo del popup',
           title: 'Titolo',
         },
-        //imageUrl: {
-          //type: 'string',
-          //title: 'URL Immagine',
-          //format: 'url',
-        //},
         imageUrl: {
           type: 'string',
-          title: 'URL Immagine',
+          title: 'Immagine',
           format: 'url',
           options: {
             upload: true
           },
+          // TODO: Improve preview rendering...
           links: [
             {
               'href': '{{self}}',
-              'rel': 'view'
+              'rel': 'Vedi'
             }
           ]
         },
@@ -121,7 +171,7 @@ function popupEditPage(element) {
 
   // Show popup using current editor configuration
   const showPopup = () =>
-    tripopupper.run(editor.getValue());
+    tripopupper.run(editor.getValue(), $('#popup-snippet-debug-mode-toggle').is(':checked'));
 
   // Hook form...
 
@@ -162,14 +212,14 @@ function popupEditPage(element) {
   $('#popup-launcher').on('click', () => showPopup());
 
   // Keyboard tricks...
-  $(document).on('keydown', e => {
-    const tag = e.target.tagName.toLowerCase();
+  //$(document).on('keydown', e => {
+    //const tag = e.target.tagName.toLowerCase();
 
-    // Press spacebar but not when edit stuff...
-    if (e.keyCode === 32 && tag !== 'input' && tag !== 'textarea' && tag !== 'checkbox') {
-      showPopup();
-    }
-  });
+    //// Press spacebar but not when edit stuff...
+    //if (e.keyCode === 32 && tag !== 'input' && tag !== 'textarea' && tag !== 'checkbox') {
+      //showPopup();
+    //}
+  //});
 }
 
 export default popupEditPage;
