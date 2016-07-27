@@ -14,6 +14,40 @@ function popupEditPage(element) {
   const json = $(editorContainer).data('json');
   const popup = $(editorContainer).data('popup');
 
+  // Bootstrap Material Theme
+  JSONEditor.defaults.themes.bootstrapmaterial = JSONEditor.defaults.themes.bootstrap3.extend({
+    getFormControl: function(label, input, description) {
+      var group = document.createElement('div');
+
+      if (label && input.type === 'checkbox') {
+        group.className += ' checkbox';
+        label.insertBefore(input, label.firstChild);
+        label.style.fontSize = '14px';
+        group.style.marginTop = '0';
+        group.appendChild(label);
+        input.style.position = 'relative';
+        input.style.cssFloat = 'left';
+      } else {
+        group.className += ' form-group';
+        if (label) {
+          label.className += ' control-label';
+          group.appendChild(label);
+        }
+        group.appendChild(input);
+      }
+
+      if (description) group.appendChild(description);
+
+      return group;
+    },
+    getButton: function(text, icon, title) {
+      var el = this._super(text, icon, title);
+      el.className += 'btn btn-success';
+      return el;
+    },
+  });
+
+  // TODO: I have no idea how but try to find another less evil way, maybe open a PR!
   // See: https://github.com/jdorn/json-editor/blob/master/src/editors/upload.js
   // Extend json-editor default upload UI behaviour...
   JSONEditor.defaults.editors.upload = JSONEditor.defaults.editors.upload.extend({
@@ -106,7 +140,7 @@ function popupEditPage(element) {
   };
 
   const editor = new JSONEditor(editorContainer, {
-    theme: 'bootstrap3',
+    theme: 'bootstrapmaterial',
     disable_collapse: true,
     disable_edit_json: true,
     disable_properties: true,
@@ -144,13 +178,22 @@ function popupEditPage(element) {
           format: 'date',
           title: 'A',
         },
+        showAt: {
+          title: 'Mostra',
+          type: 'string',
+          enum: ['always', 'once-per-day'],
+          default: 'always',
+          options: {
+            enum_titles: ['Sempre', 'Una volta al giorno'],
+          },
+        },
         delay: {
           type: 'number',
           title: 'Ritardo (secondi)',
         },
         overlay: {
           type: 'boolean',
-          title: 'Background Transparente',
+          title: ' Background Transparente',
           format: 'checkbox',
           default: true,
         },
