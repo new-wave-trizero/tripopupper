@@ -2,22 +2,23 @@ body {
   padding-top: 70px;
 }
 
-.btn-link-list-item {
-  text-transform: none;
-  font-weight: normal;
-  padding: 5px 0px;
-  margin: 0px;
-  display: inline-block;
-  text-align: left;
-}
-
 .upload-image-preview img {
   padding-top: 5px;
 }
+
 .ascii-art {
   display: block;
   font-family: monospace;
   white-space: pre;
   font-weight: bold;
   margin: 1em 0;
+}
+
+@media(max-width:992px){
+  .popup-actions {
+    display: inline-block;
+    position: static !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 }
