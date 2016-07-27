@@ -7,11 +7,11 @@
 @section('content')
 <div class="edit-popup-page">
 <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-9">
     <h4>Modifica popup <strong>{{ $popup->name }}</strong></h4>
   </div>
-  <div class="col-md-2" style="text-align: right">
-    <div class="btn-group-sm">
+  <div class="col-md-3">
+    <div class="btn-group-sm popup-actions-edit">
       <a href="{{ url('/') }}" class="btn btn-fab btn-fab-mini"><i class="material-icons">list</i></a>
       <button class="btn btn-success btn-fab btn-fab-mini" id="popup-launcher"><i class="material-icons">launch</i></button>
       <a href="{{ url('/api/popup/' . $popup->name) }}"

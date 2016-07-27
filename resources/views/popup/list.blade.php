@@ -29,7 +29,7 @@
         <p class="list-group-item-text">
           {{ $popup->domain }}&nbsp;
         </p>
-        <div class="action-secondary popup-actions">
+        <div class="action-secondary popup-actions-list">
           <div class="btn-group-sm">
             <a href="{{ url('/popup/' . $popup->name) }}"
                class="btn btn-info btn-fab btn-fab-mini"
