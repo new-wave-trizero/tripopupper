@@ -14,3 +14,10 @@ body {
 .upload-image-preview img {
   padding-top: 5px;
 }
+.ascii-art {
+  display: block;
+  font-family: monospace;
+  white-space: pre;
+  font-weight: bold;
+  margin: 1em 0;
+}
