@@ -12,16 +12,20 @@
   </div>
   <div class="col-md-3">
     <div class="btn-group-sm popup-actions-edit">
-      <a href="{{ url('/') }}" class="btn btn-fab btn-fab-mini"><i class="material-icons">list</i></a>
-      <button class="btn btn-success btn-fab btn-fab-mini" id="popup-launcher"><i class="material-icons">launch</i></button>
+      <a href="{{ url('/') }}" class="btn btn-fab btn-fab-mini" title="Elenco dei popup">
+        <i class="material-icons">list</i></a>
+        <button class="btn btn-success btn-fab btn-fab-mini" id="popup-launcher" title="Prova popup {{ $popup->name }}!">
+        <i class="material-icons">launch</i></button>
       <a href="{{ url('/api/popup/' . $popup->name) }}"
-        class="btn btn-primary btn-fab btn-fab-mini" target="blank">
+         title="Configurazione popup {{ $popup->name }}"
+         class="btn btn-primary btn-fab btn-fab-mini" target="blank">
         <i class="material-icons">code</i>
       </a>
       <form style="display:inline" method="POST" action="{{ url('/popup/' . $popup->name) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
-        <button class="btn btn-danger btn-fab btn-fab-mini"><i class="material-icons">delete</i></button>
+        <button class="btn btn-danger btn-fab btn-fab-mini" title="Elimina popup {{ $popup->name }}">
+          <i class="material-icons">delete</i></button>
       </form>
     </div>
   </div>
@@ -35,7 +39,7 @@
 </div>
 <div class="togglebutton">
   <label>
-    <input type="checkbox" id="popup-snippet-debug-mode-toggle"> Debug Mode
+    <input type="checkbox" id="popup-snippet-debug-mode-toggle"> Modalità Debug
   </label>
 </div>
 <button

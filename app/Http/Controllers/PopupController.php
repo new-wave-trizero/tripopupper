@@ -133,7 +133,7 @@ class PopupController extends Controller
 
         $this->validate($request, [
             'config'  => 'required|json',
-            'domain'  => 'required|max:100',
+            'domain'  => 'max:100',
         ]);
 
         $popup->fill($request->only('domain'));

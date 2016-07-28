@@ -69,7 +69,7 @@ class PopupConfigController extends Controller
         $origin = $request->headers->get('Origin');
         $domain = $popup->domain;
 
-        if (is_null($domain)) {
+        if (empty($domain)) {
             return false;
         }
 
