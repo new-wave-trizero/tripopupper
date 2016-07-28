@@ -3,7 +3,7 @@
 return [
 
     // Regex of popup name
-    'regex' =>  '^[a-zA-Z]+(-[a-zA-Z]+)*$',
+    'regex' =>  '^[a-zA-Z]+[a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$',
 
     // Max len of popup name
     'maxlen' => 100,

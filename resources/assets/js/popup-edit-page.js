@@ -112,7 +112,7 @@ function popupEditPage(element) {
       xhr: function() {
         const myXhr = $.ajaxSettings.xhr();
         if (myXhr.upload) {
-          myXhr.upload.addEventListener('progress',progress, false);
+          myXhr.upload.addEventListener('progress', progress, false);
         }
         return myXhr;
       },
@@ -197,6 +197,7 @@ function popupEditPage(element) {
           format: 'checkbox',
           default: true,
         },
+        /***
         experimental: {
           type: 'object',
           title: 'Funzioni Sperimentali',
@@ -207,6 +208,7 @@ function popupEditPage(element) {
             }
           }
         }
+         ***/
       }
     }
   });

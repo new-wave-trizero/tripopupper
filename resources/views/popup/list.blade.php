@@ -50,7 +50,13 @@
             <form style="display:inline" method="POST" action="{{ url('/popup/'. $popup->name) }}">
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
-              <button class="btn btn-danger btn-fab btn-fab-mini" title="Elimina popup {{ $popup->name }}">
+              <button
+                 class="btn btn-danger btn-fab btn-fab-mini ask-confirm"
+                 data-confirm-title="Popup {{ $popup->name }}"
+                 data-confirm-body="Sei sicuro di voler eliminare il popup <strong>{{ $popup->name }}</strong>?"
+                 data-confirm-btn-title="Elimina"
+                 data-confirm-btn-class="btn-danger"
+                 title="Elimina popup {{ $popup->name }}">
                 <i class="material-icons">delete</i></button>
             </form>
           </div>
