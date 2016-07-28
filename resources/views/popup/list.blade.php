@@ -21,9 +21,15 @@
 <div class="list-group">
   @foreach($popups as $popup)
     <div class="list-group-item">
-      <div class="row-picture">
-        <img class="circle" src="{{ $popup->config['imageUrl'] or null }}">
-      </div>
+      @if (!isset($popup->config['imageUrl']) || empty($popup->config['imageUrl']))
+        <div class="row-action-primary">
+          <i class="material-icons">insert_photo</i>
+        </div>
+      @else
+        <div class="row-picture">
+          <img class="circle" src="{{ $popup->config['imageUrl'] }}" />
+        </div>
+      @endif
       <div class="row-content">
         <h4 class="list-group-item-heading">{{ $popup->name }}</h4>
         <p class="list-group-item-text">
