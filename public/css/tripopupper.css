@@ -2,6 +2,16 @@ body {
   padding-top: 70px;
 }
 
+/* Trizzy Color */
+/* TODO: using css preprocessors instead */
+.trizzy-color {
+  background-color: #9999CC !important;
+  color: #fff !important;
+}
+.trizzy-color .dropdown-menu li > a:hover, .navbar.navbar-inverse .dropdown-menu li > a:focus {
+  color: #9999CC !important;
+}
+
 .upload-image-preview img {
   padding-top: 5px;
 }

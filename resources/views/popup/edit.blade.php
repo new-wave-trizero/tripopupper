@@ -6,6 +6,7 @@
 
 @section('content')
 <div class="edit-popup-page">
+
 <div class="row">
   <div class="col-md-9">
     <h4>Modifica popup <strong>{{ $popup->name }}</strong></h4>
@@ -36,44 +37,63 @@
     </div>
   </div>
 </div>
+
 <br />
 
-<div>Includi questo codice alla fine della tua pagina web, prima della fine del tag <code>{{ '</body>' }}</code>:</div>
-<div id="popup-embedded-snippet">
-<pre style="border-radius: 0" data-debug="0"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."')</script>" }}</code></pre>
-<pre style="border-radius: 0;display:none" data-debug="1"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."', true)</script>" }}</code></pre>
+<div class="panel panel-primary">
+  <div class="panel-heading trizzy-color">
+    <h3 class="panel-title">Integrazione</h3>
+  </div>
+  <div class="panel-body">
+    <p>Includi questo codice alla fine della tua pagina web, prima della fine del tag <code>{{ '</body>' }}</code>:</p>
+    <div id="popup-embedded-snippet">
+      <pre style="border-radius: 0" data-debug="0"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."')</script>" }}</code></pre>
+      <pre style="border-radius: 0;display:none" data-debug="1"><code>{{ "<script src=\"".config('popup.js_lib_url')."\"></script>\n<script>tripopupper.launch('".$popup->name."', true)</script>" }}</code></pre>
+    </div>
+    <div class="togglebutton">
+      <label>
+        <input type="checkbox" id="popup-snippet-debug-mode-toggle"> Modalità Debug
+      </label>
+    </div>
+    <button
+      class="btn btn-sm btn-raised btn-default btn-clipboard"
+      data-clipboard-target="#popup-embedded-snippet"> <i class="material-icons">content_copy</i>  Copia</button>
+  </div>
 </div>
-<div class="togglebutton">
-  <label>
-    <input type="checkbox" id="popup-snippet-debug-mode-toggle"> Modalità Debug
-  </label>
-</div>
-<button
-  class="btn btn-raised btn-default btn-clipboard"
-  data-clipboard-target="#popup-embedded-snippet"> <i class="material-icons">content_copy</i>  Copia</button>
-<br />
-<br />
 
 <form method="POST" action="{{ url('/popup/' . $popup->name) }}" id="popup-form" novalidate>
-  <div class="well well-sm">
   {{ csrf_field() }}
   {{ method_field('PUT') }}
-  <h3>Configura Dominio</h3>
-  <div class="well well-sm">
-    <div class="form-group{{ $errors->has('domain') ? ' has-error' : '' }}">
-      <label class="control-label">Dominio</label>
-      <input name="domain" type="text" class="form-control" value="{{ old('domain', $popup->domain) }}">
-      <span class="help-block">{{ $errors->first('domain') }}</span>
+  <div class="panel panel-primary">
+
+    <div class="panel-heading trizzy-color">
+      <h3 class="panel-title">Configura</h3>
+    </div>
+    <div class="panel-body">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading trizzy-color">
+          <h3 class="panel-title">Dominio</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group{{ $errors->has('domain') ? ' has-error' : '' }}">
+            <label class="control-label">Dominio</label>
+            <input name="domain" type="text" class="form-control" value="{{ old('domain', $popup->domain) }}">
+            <span class="help-block">{{ $errors->first('domain') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="popup-config-editor"
+        data-popup='{!! json_encode(array_except($popup->toArray(), 'config')) !!}'
+        data-json='{!! old('config', json_encode($popup->config)) !!}'></div>
+
+      <button type="submit" class="btn btn-sm btn-default btn-raised">Salva</button>
+
     </div>
   </div>
-
-  <div
-    id="popup-config-editor"
-    data-popup='{!! json_encode(array_except($popup->toArray(), 'config')) !!}'
-    data-json='{!! old('config', json_encode($popup->config)) !!}'></div>
-
-  </div>
-  <button type="submit" class="btn btn-default btn-raised">Salva</button>
 </form>
+
 </div>
 @endsection

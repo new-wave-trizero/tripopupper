@@ -42,7 +42,19 @@ function popupEditPage(element) {
     },
     getButton: function(text, icon, title) {
       var el = this._super(text, icon, title);
-      el.className += 'btn btn-success';
+      el.className += 'btn';
+      return el;
+    },
+    getHeader: function(text) {
+      var el = document.createElement('div');
+      el.className += 'panel-heading trizzy-color';
+
+      if (typeof text === 'string') {
+        el.textContent = text;
+      } else {
+        el.appendChild(text);
+      }
+
       return el;
     },
   });
@@ -145,7 +157,7 @@ function popupEditPage(element) {
     disable_edit_json: true,
     disable_properties: true,
     schema: {
-      title: 'Configura Popup',
+      title: 'Popup',
       type: 'object',
       properties: {
         title: {
@@ -197,18 +209,16 @@ function popupEditPage(element) {
           format: 'checkbox',
           default: true,
         },
-        /***
-        experimental: {
-          type: 'object',
-          title: 'Funzioni Sperimentali',
-          properties: {
-            qandoShop: {
-              type: 'string',
-              title: 'Qando Shop',
-            }
-          }
-        }
-         ***/
+        //experimental: {
+          //type: 'object',
+          //title: 'Funzioni Sperimentali',
+          //properties: {
+            //qandoShop: {
+              //type: 'string',
+              //title: 'Qando Shop',
+            //}
+          //}
+        //}
       }
     }
   });
