@@ -93,6 +93,68 @@ class CustomerAccountController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $customerUser = User::customer()->notMe()->findOrFail($id);
+
+        $this->authorize('manage-customer', $customerUser);
+
+        $popups = $customerUser->popups;
+
+        return view('customer_account.show', compact('customerUser', 'popups'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $customerUser = User::customer()->notMe()->findOrFail($id);
+
+        $this->authorize('manage-customer', $customerUser);
+
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $customerUser->id,
+            'can_delete_popups' => 'required|boolean',
+            'can_create_popups' => 'required|boolean',
+            'can_update_popups_domains' => 'required|boolean',
+        ];
+
+        if ($request->user()->isAdmin()) {
+            $rules['valid_until'] = 'required|date';
+        }
+
+        $this->validate($request, $rules);
+
+        $customerUser->fill([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => bcrypt($request->get('password')),
+            'account_type' => 'customer',
+        ]);
+        $customerUser->save();
+
+        $customerUser->customerAccount->fill(
+            array_merge($request->only('can_delete_popups', 'can_create_popups',
+                'can_update_popups_domains'
+            ), $request->user()->isAdmin() ? $request->only('valid_until') : [])
+        );
+        $customerUser->customerAccount->save();
+
+        return redirect("customer-account/{$customerUser->id}");
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request  $request

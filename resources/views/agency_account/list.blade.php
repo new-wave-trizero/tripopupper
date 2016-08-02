@@ -55,7 +55,7 @@
           <tr>
             <td>{{ $agencyUser->name }}</td>
             <td>{{ $agencyUser->email }}</td>
-            <td>{{ $agencyUser->agencyAccount->valid_until }}</td>
+            <td>{{ $agencyUser->agencyAccount->valid_until->toDateString() }}</td>
             <td>
               <div class="btn-group-sm">
                 @can('login-as-another-user', $agencyUser)

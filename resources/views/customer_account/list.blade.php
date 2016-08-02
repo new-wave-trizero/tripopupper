@@ -114,10 +114,15 @@
               @endif
             </td>
             @if (Auth::user()->isAdmin())
-              <td>{{ $customerUser->customerAccount->valid_until }}</td>
+              <td>{{ $customerUser->customerAccount->valid_until->toDateString() }}</td>
             @endif
             <td>
               <div class="btn-group-sm">
+                <a href="{{ url('/customer-account/' . $customerUser->id) }}"
+                   class="btn btn-info btn-fab btn-fab-mini"
+                   title="Modifica cliente {{ $customerUser->name }}">
+                  <i class="material-icons">mode_edit</i>
+                </a>
                 @can('login-as-another-user', $customerUser)
                   <form style="display:inline" method="POST" action="{{ url('/login-as/' . $customerUser->id) }}">
                     {{ csrf_field() }}

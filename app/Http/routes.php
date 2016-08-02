@@ -21,7 +21,7 @@ Route::resource('admin-account', 'AdminAccountController', ['only' => [
     'index', 'store', 'destroy',
 ]]);
 Route::resource('customer-account', 'CustomerAccountController', ['only' => [
-    'index', 'store', 'destroy',
+    'index', 'store', 'destroy', 'show', 'update',
 ]]);
 
 Route::post('login-as/{user}', 'LoginAsController@loginAs');
