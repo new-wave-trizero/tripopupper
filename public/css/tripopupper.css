@@ -38,3 +38,14 @@ body {
     text-align: right;
   }
 }
+
+
+.btn-fb {
+    text-decoration: none;
+}
+.btn-fb:hover {
+    text-decoration: none;
+}
+.btn-fb > img {
+    width: 40px;
+}

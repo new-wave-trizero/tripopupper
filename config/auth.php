@@ -40,7 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
+        'popup' => [
+            'driver' => 'session',
+            'provider' => 'popups',
+        ],
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -51,8 +54,6 @@ return [
     |--------------------------------------------------------------------------
     | User Providers
     |--------------------------------------------------------------------------
-    |
-    | All authentication drivers have a user provider. This defines how the
     | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
@@ -68,6 +69,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        'popups' => [
+            'driver' => 'eloquent',
+            'model' => App\Popup::class,
         ],
 
         // 'users' => [

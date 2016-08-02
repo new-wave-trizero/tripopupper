@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRoleFieldOnUsers extends Migration
+class AddAccountTypeFieldOnUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddRoleFieldOnUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('admin');
+            $table->string('account_type')->after('id')->default('admin');
         });
     }
 
@@ -25,7 +25,7 @@ class AddRoleFieldOnUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropColumn('account_type');
         });
     }
 }

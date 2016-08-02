@@ -2,6 +2,7 @@
 
 @section('content')
 
+@can('create-popups')
 <div class="panel panel-primary">
   <div class="panel-heading trizzy-color">
     <h3 class="panel-title">Nuovo Popup</h3>
@@ -21,6 +22,7 @@
     </form>
   </div>
 </div>
+@endcan
 
 <div class="panel panel-primary">
   <div class="panel-heading trizzy-color">
@@ -62,18 +64,20 @@
                    class="btn btn-primary btn-fab btn-fab-mini" target="blank">
                   <i class="material-icons">code</i>
                 </a>
-                <form style="display:inline" method="POST" action="{{ url('/popup/'. $popup->name) }}">
-                  {{ csrf_field() }}
-                  {{ method_field('DELETE') }}
-                  <button
-                     class="btn btn-danger btn-fab btn-fab-mini ask-confirm"
-                     data-confirm-title="Popup {{ $popup->name }}"
-                     data-confirm-body="Sei sicuro di voler eliminare il popup <strong>{{ $popup->name }}</strong>?"
-                     data-confirm-btn-title="Elimina"
-                     data-confirm-btn-class="btn-danger"
-                     title="Elimina popup {{ $popup->name }}">
-                    <i class="material-icons">delete</i></button>
-                </form>
+                @can('delete-popup', $popup)
+                  <form style="display:inline" method="POST" action="{{ url('/popup/'. $popup->name) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button
+                       class="btn btn-danger btn-fab btn-fab-mini ask-confirm"
+                       data-confirm-title="Popup {{ $popup->name }}"
+                       data-confirm-body="Sei sicuro di voler eliminare il popup <strong>{{ $popup->name }}</strong>?"
+                       data-confirm-btn-title="Elimina"
+                       data-confirm-btn-class="btn-danger"
+                       title="Elimina popup {{ $popup->name }}">
+                      <i class="material-icons">delete</i></button>
+                  </form>
+                @endcan
               </div>
             </div>
           </div>

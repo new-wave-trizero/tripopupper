@@ -4,9 +4,23 @@ Route::get('/', 'PopupController@showPopupsList');
 Route::get('/popup', 'PopupController@showPopupsList');
 Route::post('popup', 'PopupController@storePopup');
 Route::get('popup/{popup}', 'PopupController@editPoup');
+Route::get('popup/{popup}/shared/{secret}', 'PopupController@showSharedPopup');
 Route::put('popup/{popup}', 'PopupController@updatePopup');
 Route::delete('popup/{popup}', 'PopupController@destroyPopup');
 Route::post('popup/{popup}/upload-image', 'PopupController@uploadImage');
+Route::post('popup/{popup}/share', 'PopupController@sharePopup');
+
+Route::resource('agency-account', 'AgencyAccountController', ['only' => [
+    'index', 'store', 'destroy',
+]]);
+Route::resource('admin-account', 'AdminAccountController', ['only' => [
+    'index', 'store', 'destroy',
+]]);
+Route::resource('customer-account', 'CustomerAccountController', ['only' => [
+    'index', 'store', 'destroy',
+]]);
+
+Route::post('login-as/{user}', 'LoginAsController@loginAs');
 
 //Route::auth();
 Route::get('login', 'Auth\AuthController@showLoginForm');

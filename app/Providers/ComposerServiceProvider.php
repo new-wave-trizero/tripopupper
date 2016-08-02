@@ -16,7 +16,7 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         // TODO: Maybe make a little piece of view with this data...
-        View::composer('layouts.material', function($view)
+        View::composer(['layouts.material', 'layouts.material_shared'], function($view)
         {
             $view->laravelJsVars = base64_encode(json_encode([
                 'app_url' => url('/'),

@@ -38,7 +38,15 @@
     </div>
     <div class="navbar-collapse collapse navbar-inverse-collapse">
       <ul class="nav navbar-nav">
-         <li class="sactive"><a href="{{ url('/') }}">Admins</a></li>
+        @can('manage-admins')
+          <li class="{{ Request::is('admin-account') ? 'active': '' }}"><a href="{{ url('/admin-account') }}">Amministratori</a></li>
+        @endcan
+        @can('manage-agencies')
+          <li class="{{ Request::is('agency-account') ? 'active': '' }}"><a href="{{ url('/agency-account') }}">Agenzie</a></li>
+        @endcan
+        @can('manage-customers')
+          <li class="{{ Request::is('customer-account') ? 'active': '' }}"><a href="{{ url('/customer-account') }}">Clienti</a></li>
+        @endcan
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">

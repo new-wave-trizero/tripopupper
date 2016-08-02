@@ -28,7 +28,9 @@ class PopupController extends Controller
     public function __construct(AwesomeNamesSuggestor $awesomeNamesSuggestor)
     {
         $this->namesSuggestor = $awesomeNamesSuggestor->suggestor(config('popup.suggestor'));
-        $this->middleware('auth');
+        $this->middleware('auth.popup', ['only' => ['showSharedPopup']]);
+        $this->middleware('auth', ['except' => 'showSharedPopup']);
+        $this->middleware('account.expiration', ['except' => 'showSharedPopup']);
     }
 
     /**
@@ -89,13 +91,16 @@ class PopupController extends Controller
      */
     public function storePopup(Request $request)
     {
+        // Can't create a new popup
+        $this->authorize('create-popups');
+
         $this->validate($request, [
             'name' => $this->popupNameRule()
         ]);
 
         $popup = $request->user()->popups()->create([
-            'name'   => $request->get('name'),
-            'config' => (object)[], // aka {}
+            'name'     => $request->get('name'),
+            'config'   => (object)[], // aka {}
         ]);
 
         return redirect("popup/{$popup->name}");
@@ -112,9 +117,23 @@ class PopupController extends Controller
         $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't edit popup
-        $this->authorize('manage-popup', $popup);
+        $this->authorize('view-popup', $popup);
 
         return view('popup.edit', compact('popup'));
+    }
+
+    /**
+     * Show shared popup.
+     *
+     * @param  string  $name
+     * @param  string  $secret
+     * @return \Illuminate\Http\Response
+     */
+    public function showSharedPopup($name)
+    {
+        $popup = Popup::whereName($name)->firstOrFail();
+
+        return view('popup.shared', compact('popup'));
     }
 
     /**
@@ -129,14 +148,16 @@ class PopupController extends Controller
         $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't update popup
-        $this->authorize('manage-popup', $popup);
+        $this->authorize('update-popup', $popup);
 
         $this->validate($request, [
             'config'  => 'required|json',
             'domain'  => 'max:100',
         ]);
 
-        $popup->fill($request->only('domain'));
+        if (Gate::allows('update-popup-domain', $popup)) {
+            $popup->domain = $request->get('domain');
+        }
         $popup->config = json_decode($request->get('config'), true);
         $popup->save();
 
@@ -155,7 +176,7 @@ class PopupController extends Controller
         $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't upload image related to popup
-        $this->authorize('manage-popup', $popup);
+        $this->authorize('view-popup', $popup);
 
         $this->validate($request, [
             'image'  => 'required|image',
@@ -207,6 +228,27 @@ class PopupController extends Controller
     }
 
     /**
+     * Share popup.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $name
+     * @return \Illuminate\Http\Response
+     */
+    public function sharePopup(Request $request, $name)
+    {
+        $popup = Popup::whereName($name)->firstOrFail();
+
+        // Can't share popup
+        $this->authorize('share-popup', $popup);
+
+        $secret = str_random(50);
+        $popup->secret = bcrypt($secret);
+        $popup->save();
+
+        return redirect("/popup/{$popup->name}")->with('secret', $secret);
+    }
+
+    /**
      * Remove popup.
      *
      * @param  string  $name
@@ -217,12 +259,9 @@ class PopupController extends Controller
         $popup = Popup::whereName($name)->firstOrFail();
 
         // Can't remove popup
-        $this->authorize('manage-popup', $popup);
+        $this->authorize('delete-popup', $popup);
 
         $popup->delete();
-
-        // Delete popup upload dir
-        Storage::disk('public')->deleteDirectory("popup/{$popup->name}");
 
         return redirect('/');
     }

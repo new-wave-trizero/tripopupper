@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Rome',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,6 +161,7 @@ return [
 
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 
@@ -210,6 +211,7 @@ return [
 
         'API' => Dingo\Api\Facade\API::class,
         'APIRoute' => Dingo\Api\Facade\Route::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

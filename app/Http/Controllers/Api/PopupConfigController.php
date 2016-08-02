@@ -42,6 +42,11 @@ class PopupConfigController extends Controller
             throw new NotFoundHttpException("Popup '{$name}' not found. Create a new popup at " . url('/'));
         }
 
+        // Check if the account related to popup is expired
+        if ($popup->isRelatedAccountExpired()) {
+            throw new AccessDeniedHttpException("Popup '{$name}' the account related to this popup is expired.");
+        }
+
         // Check popup origin when CORS
         if (app('Barryvdh\Cors\Stack\CorsService')->isCorsRequest($request)) {
             if (!$this->checkPopupOrigin($request, $popup)) {
@@ -73,7 +78,12 @@ class PopupConfigController extends Controller
             return false;
         }
 
-        $allowedOrigins = ["http://{$domain}", "https://{$domain}"];
+        $domains = count(explode('.', $domain)) === 2 ? [$domain, "www.{$domain}"] : [$domain];
+        $allowedOrigins = collect($domains)
+            ->map(function ($domain) { return ["http://{$domain}", "https://{$domain}"]; })
+            ->flatten()
+            ->all();
+
         return in_array($origin, $allowedOrigins);
     }
 }

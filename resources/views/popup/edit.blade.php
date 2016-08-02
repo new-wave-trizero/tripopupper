@@ -22,18 +22,20 @@
          class="btn btn-primary btn-fab btn-fab-mini" target="blank">
         <i class="material-icons">code</i>
       </a>
-      <form style="display:inline" method="POST" action="{{ url('/popup/' . $popup->name) }}">
-        {{ csrf_field() }}
-        {{ method_field('DELETE') }}
-        <button
-           class="btn btn-danger btn-fab btn-fab-mini ask-confirm"
-           data-confirm-title="Popup {{ $popup->name }}"
-           data-confirm-body="Sei sicuro di voler eliminare il popup <strong>{{ $popup->name }}</strong>?"
-           data-confirm-btn-title="Elimina"
-           data-confirm-btn-class="btn-danger"
-           title="Elimina popup {{ $popup->name }}">
-          <i class="material-icons">delete</i></button>
-      </form>
+      @can('delete-popup', $popup)
+        <form style="display:inline" method="POST" action="{{ url('/popup/' . $popup->name) }}">
+          {{ csrf_field() }}
+          {{ method_field('DELETE') }}
+          <button
+             class="btn btn-danger btn-fab btn-fab-mini ask-confirm"
+             data-confirm-title="Popup {{ $popup->name }}"
+             data-confirm-body="Sei sicuro di voler eliminare il popup <strong>{{ $popup->name }}</strong>?"
+             data-confirm-btn-title="Elimina"
+             data-confirm-btn-class="btn-danger"
+             title="Elimina popup {{ $popup->name }}">
+            <i class="material-icons">delete</i></button>
+        </form>
+      @endcan
     </div>
   </div>
 </div>
@@ -61,6 +63,39 @@
   </div>
 </div>
 
+@can('share-popup', $popup)
+<div class="panel panel-primary">
+  <div class="panel-heading trizzy-color">
+    <h3 class="panel-title">Condividi</h3>
+  </div>
+  <div class="panel-body">
+    <form method="POST" action="{{ url('/popup/' . $popup->name . '/share') }}">
+      {{ csrf_field() }}
+
+      @if (session('secret'))
+        <div class="alert alert-dismissible alert-info">
+          <strong>Popup condiviso!</strong> Copia il link seguente perché non lo
+          rivedrai più.
+          <br />
+          <br />
+          <div><a target="_blank" href="{{ url('/popup/' . $popup->name . '/shared/' . session('secret')) }}">
+            {{ url('/popup/' . $popup->name . '/shared/' . session('secret')) }}</a></div>
+
+          <br />
+
+          <a href="http://www.facebook.com/sharer.php?u={{ urlencode(url('/popup/' . $popup->name . '/shared/' . session('secret'))) }}" target="_blank" class="btn-fb">
+              <img src="{{ asset('images/fb-share.png') }}" alt="Facebook" />
+          </a>
+        </div>
+      @endif
+
+      <button class="btn btn-sm btn-raised btn-info"> <i
+          class="material-icons">public</i>  Condividi</button>
+    </form>
+  </div>
+</div>
+@endcan
+
 <form method="POST" action="{{ url('/popup/' . $popup->name) }}" id="popup-form" novalidate>
   {{ csrf_field() }}
   {{ method_field('PUT') }}
@@ -71,18 +106,20 @@
     </div>
     <div class="panel-body">
 
-      <div class="panel panel-primary">
-        <div class="panel-heading trizzy-color">
-          <h3 class="panel-title">Dominio</h3>
-        </div>
-        <div class="panel-body">
-          <div class="form-group{{ $errors->has('domain') ? ' has-error' : '' }}">
-            <label class="control-label">Dominio</label>
-            <input name="domain" type="text" class="form-control" value="{{ old('domain', $popup->domain) }}">
-            <span class="help-block">{{ $errors->first('domain') }}</span>
+      @can('update-popup-domain', $popup)
+        <div class="panel panel-primary">
+          <div class="panel-heading trizzy-color">
+            <h3 class="panel-title">Dominio</h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group{{ $errors->has('domain') ? ' has-error' : '' }}">
+              <label class="control-label">Dominio</label>
+              <input name="domain" type="text" class="form-control" value="{{ old('domain', $popup->domain) }}">
+              <span class="help-block">{{ $errors->first('domain') }}</span>
+            </div>
           </div>
         </div>
-      </div>
+      @endcan
 
       <div
         id="popup-config-editor"
