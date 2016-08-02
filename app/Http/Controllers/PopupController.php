@@ -60,7 +60,7 @@ class PopupController extends Controller
         return [
             'required',
             'max:' . config('popup.maxlen'),
-            'unique:popups,name' . is_null($popup) ? '' : ',' . $popup->id,
+            'unique:popups,name' . (is_null($popup) ? '' : (',' . $popup->id)),
             'regex:/' . config('popup.regex') . '/',
             'not_in:' . implode(config('popup.reserverd'), ','),
         ];
