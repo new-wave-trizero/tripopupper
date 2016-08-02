@@ -54,6 +54,7 @@
             {{ Auth::user()->email }}
             <b class="caret"></b></a>
           <ul class="dropdown-menu">
+            <li><a href="{{ url('/profile') }}">Profilo</a></li>
             <li><a href="{{ url('/logout') }}">Esci</a></li>
           </ul>
         </li>

@@ -10,6 +10,10 @@ Route::delete('popup/{popup}', 'PopupController@destroyPopup');
 Route::post('popup/{popup}/upload-image', 'PopupController@uploadImage');
 Route::post('popup/{popup}/share', 'PopupController@sharePopup');
 
+Route::get('profile', 'ProfileController@showProfile');
+Route::put('profile', 'ProfileController@updateProfile');
+Route::put('profile/password', 'ProfileController@updatePassword');
+
 Route::resource('agency-account', 'AgencyAccountController', ['only' => [
     'index', 'store', 'destroy',
 ]]);
