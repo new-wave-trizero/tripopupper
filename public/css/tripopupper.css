@@ -49,3 +49,28 @@ body {
 .btn-fb > img {
     width: 40px;
 }
+
+.popups-drag-container {
+    min-height: 170px;
+}
+.popup-bubble {
+    display: inline-block;
+    margin: 10px;
+    cursor: move;
+}
+.popup-bubble i {
+    border-radius: 100%;
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.25);
+    line-height: 100px;
+    text-align: center;
+    color: white;
+}
+.popup-bubble img {
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+}

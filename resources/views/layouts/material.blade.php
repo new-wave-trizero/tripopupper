@@ -47,6 +47,7 @@
         @can('manage-customers')
           <li class="{{ Request::is('customer-account') ? 'active': '' }}"><a href="{{ url('/customer-account') }}">Clienti</a></li>
         @endcan
+        <li class="{{ Request::is('popups-composition') ? 'active': '' }}"><a href="{{ url('popups-composition') }}">Componi Popup</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">

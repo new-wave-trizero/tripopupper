@@ -15,7 +15,7 @@ return [
     ],
 
     // Url of client js lib
-    'js_lib_url' => 'https://rawgit.com/new-wave-trizero/tripopupper-js/master/lib/tripopupper.js',
+    'js_lib_url' => env('TRIPOPUPPER_JS_SDK', 'https://rawgit.com/new-wave-trizero/tripopupper-js/master/lib/tripopupper.js'),
 
     // Images config
     'images' => [
