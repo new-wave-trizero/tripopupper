@@ -2,6 +2,7 @@
 
 Route::get('/', 'PopupController@showPopupsList');
 Route::get('/popup', 'PopupController@showPopupsList');
+Route::get('/popup/suggest-name', 'PopupController@suggestPopupNameJson');
 Route::post('popup', 'PopupController@storePopup');
 Route::get('popup/{popup}', 'PopupController@editPoup');
 Route::get('popup/{popup}/shared/{secret}', 'PopupController@showSharedPopup');

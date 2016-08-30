@@ -48,11 +48,13 @@
       @foreach ($popups as $popup)
         @if (!isset($popup->config['imageUrl']) || empty($popup->config['imageUrl']))
           <div class="popup-bubble" data-id="{{ $popup->name }}">
-            <i class="material-icons" title="{{ $popup->name }}">insert_photo</i>
+            <i class="material-icons placeholder" title="{{ $popup->name }}">insert_photo</i>
+            {{--<i class="material-icons not-runnable">lock</i>--}}
           </div>
         @else
           <div class="popup-bubble" data-id="{{ $popup->name }}">
             <img src="{{ $popup->config['imageUrl'] }}" title="{{ $popup->name }}">
+            {{-- <i class="material-icons not-runnable">lock</i> --}}
           </div>
         @endif
       @endforeach

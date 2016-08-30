@@ -54,11 +54,12 @@ body {
     min-height: 170px;
 }
 .popup-bubble {
+    position: relative;
     display: inline-block;
     margin: 10px;
     cursor: move;
 }
-.popup-bubble i {
+.popup-bubble i.placeholder {
     border-radius: 100%;
     vertical-align: middle;
     width: 100px;
@@ -67,6 +68,15 @@ body {
     background: rgba(0, 0, 0, 0.25);
     line-height: 100px;
     text-align: center;
+    color: white;
+}
+.popup-bubble i.not-runnable {
+    position: absolute;
+    top: calc(50% - (12px + 8px));
+    left: calc(50% - (12px + 8px));
+    border-radius: 100%;
+    padding: 8px;
+    background-color: #CC181E;
     color: white;
 }
 .popup-bubble img {

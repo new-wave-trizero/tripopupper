@@ -13,6 +13,8 @@
     "clipboard": "^1.5.12",
     "json-editor": "^0.7.27",
     "lodash": "^4.13.1",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
     "sortablejs": "^1.4.2"
   }
 }

@@ -5,6 +5,7 @@ namespace App\Providers;
 use View;
 use Auth;
 use Illuminate\Support\ServiceProvider;
+Use App\Popup;
 
 class ComposerServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,23 @@ class ComposerServiceProvider extends ServiceProvider
                 'csrf_token' => csrf_token(),
                 'user' => Auth::user(),
             ]));
+        });
+
+        View::composer('partials.popup.create_form', function($view)
+        {
+            if ($view->getData()['suggest_name']) {
+                try {
+                    $view->suggestedName = app('App\Services\AwesomeNamesSuggestor\AwesomeNamesSuggestor')
+                        ->suggestor(config('popup.suggestor'))
+                        ->suggestFreshRandomName(function ($name) {
+                            return Popup::whereName($name)->count() === 0; // A new name is always fresh!
+                        });
+                } catch (\Exception $e) {
+                    $view->suggestedName  = ''; // Can't suggest name...
+                }
+            } else {
+                $view->suggestedName  = '';
+            }
         });
     }
 

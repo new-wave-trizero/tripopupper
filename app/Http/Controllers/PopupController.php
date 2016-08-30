@@ -44,9 +44,7 @@ class PopupController extends Controller
         $popups = $request->user()
             ->popups()->orderBy('id', 'desc')->get();
 
-        $suggestedName = $this->suggestPopupName();
-
-        return view('popup.list', compact('popups', 'suggestedName'));
+        return view('popup.list', compact('popups'));
     }
 
     /**
@@ -81,6 +79,24 @@ class PopupController extends Controller
             // TODO: Better error handling...
             return null;
         }
+    }
+
+    /**
+     * Suggest an awesome new popup name to the world.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function suggestPopupNameJson()
+    {
+        $name = $this->suggestPopupName();
+
+        if (is_null($name)) {
+            return response()
+                ->json([ 'error' => 'Can\'t suggest a name, please try again later.' ])
+                ->setStatusCode(503);
+        }
+
+        return response()->json($name);
     }
 
     /**
