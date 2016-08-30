@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\User;
+use Validator;
 
 class AgencyAccountController extends Controller
 {
@@ -17,6 +18,7 @@ class AgencyAccountController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('account.expiration');
         $this->middleware('can:manage-agencies');
     }
 
@@ -42,12 +44,19 @@ class AgencyAccountController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6',
-            'valid_until' => 'required|date'
-        ]);
+            'valid_until' => 'required|date',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        $validator->sometimes('max_member_customers', 'required|integer', function ($input) {
+            return $input->max_member_customers !== 'unlimited';
+        });
+
+        $this->validateWith($validator, $request);
 
         $agencyUser = User::create([
             'name' => $request->get('name'),
@@ -55,7 +64,11 @@ class AgencyAccountController extends Controller
             'password' => bcrypt($request->get('password')),
             'account_type' => 'agency',
         ]);
-        $agencyUser->agencyAccount()->create($request->only('valid_until'));
+        $agencyUser->agencyAccount()->create(
+            $request->get('max_member_customers') === 'unlimited'
+            ? $request->only('valid_until')
+            : $request->only('valid_until', 'max_member_customers')
+        );
 
         return redirect('agency-account');
     }

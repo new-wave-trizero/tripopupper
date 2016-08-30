@@ -78,6 +78,8 @@
 <script src="{{ asset('/material/js/material.min.js') }}"></script>
 <script src="{{ asset('/material/js/ripples.min.js') }}"></script>
 <script>
+  //$.material.options.input = false;
+  //$.material.options.validate = false;
   $.material.init();
 </script>
 

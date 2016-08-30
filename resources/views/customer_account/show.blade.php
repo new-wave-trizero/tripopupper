@@ -53,13 +53,12 @@
         <input name="email" type="email" class="form-control" value="{{ old('email', $customerUser->email) }}">
         <span class="help-block">{{ $errors->first('email') }}</span>
       </div>
-      @if (Auth::user()->isAdmin())
-        <div class="form-group{{ $errors->has('valid_until') ? ' has-error' : '' }}">
-          <label class="control-label">Scandenza Account</label>
-          <input name="valid_until" type="date" class="form-control" value="{{ old('valid_until', $customerUser->customerAccount->valid_until->toDateString()) }}">
-          <span class="help-block">{{ $errors->first('valid_until') }}</span>
-        </div>
-      @endif
+      <div class="form-group{{ $errors->has('valid_until') ? ' has-error' : '' }}">
+        <label class="control-label">Scandenza Account</label>
+        <input name="valid_until" type="date" class="form-control"
+               value="{{ old('valid_until', is_null($customerUser->customerAccount->valid_until) ? '' : $customerUser->customerAccount->valid_until->toDateString()) }}">
+        <span class="help-block">{{ $errors->first('valid_until') }}</span>
+      </div>
       <div class="form-group{{ $errors->has('can_create_popups') ? ' has-error' : '' }}">
         <div class="checkbox">
           <label>

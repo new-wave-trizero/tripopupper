@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
 use Gate;
+use Validator;
 
 class CustomerAccountController extends Controller
 {
@@ -54,20 +55,25 @@ class CustomerAccountController extends Controller
      */
     public function store(Request $request)
     {
+        $user = $request->user();
         $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6',
-            'can_delete_popups' => 'required|boolean',
-            'can_create_popups' => 'required|boolean',
+            'name'                      => 'required|max:255',
+            'email'                     => 'required|email|max:255|unique:users',
+            'password'                  => 'required|min:6',
+            'valid_until'               => 'required|date',
+            'can_delete_popups'         => 'required|boolean',
+            'can_create_popups'         => 'required|boolean',
             'can_update_popups_domains' => 'required|boolean',
         ];
 
-        if ($request->user()->isAdmin()) {
-            $rules['valid_until'] = 'required|date';
-        }
+        $validator = Validator::make($request->all(), $rules);
+        $validator->after(function($validator) use ($user) {
+            if ($user->isAgency() && !$user->agencyAccount->canOwnMoreCustomers()) {
+                $validator->errors()->add('max_member_customers', 'Hai superato il numero massimo di clienti.');
+            }
+        });
 
-        $this->validate($request, $rules);
+        $this->validateWith($validator, $request);
 
         $customerUser = User::create([
             'name' => $request->get('name'),
@@ -76,16 +82,15 @@ class CustomerAccountController extends Controller
             'account_type' => 'customer',
         ]);
 
-        $customerAccount = $customerUser->customerAccount()->create(
-            array_merge($request->only('can_delete_popups', 'can_create_popups',
-                'can_update_popups_domains'
-            ), $request->user()->isAdmin() ? $request->only('valid_until') : [])
-        );
+        $customerAccount = $customerUser->customerAccount()->create($request->only(
+            'can_delete_popups', 'can_create_popups', 'can_update_popups_domains',
+            'valid_until'
+        ));
 
-        if ($request->user()->isAgency()) {
+        if ($user->isAgency()) {
             $customerAccount
                 ->membershipAgencyAccount()
-                ->associate($request->user()->agencyAccount);
+                ->associate($user->agencyAccount);
             $customerAccount->save();
         }
 
@@ -123,16 +128,13 @@ class CustomerAccountController extends Controller
         $this->authorize('manage-customer', $customerUser);
 
         $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $customerUser->id,
-            'can_delete_popups' => 'required|boolean',
-            'can_create_popups' => 'required|boolean',
+            'name'                      => 'required|max:255',
+            'email'                     => 'required|email|max:255|unique:users,email,' . $customerUser->id,
+            'valid_until'               => 'required|date',
+            'can_delete_popups'         => 'required|boolean',
+            'can_create_popups'         => 'required|boolean',
             'can_update_popups_domains' => 'required|boolean',
         ];
-
-        if ($request->user()->isAdmin()) {
-            $rules['valid_until'] = 'required|date';
-        }
 
         $this->validate($request, $rules);
 
@@ -144,11 +146,10 @@ class CustomerAccountController extends Controller
         ]);
         $customerUser->save();
 
-        $customerUser->customerAccount->fill(
-            array_merge($request->only('can_delete_popups', 'can_create_popups',
-                'can_update_popups_domains'
-            ), $request->user()->isAdmin() ? $request->only('valid_until') : [])
-        );
+        $customerUser->customerAccount->fill($request->only(
+            'can_delete_popups', 'can_create_popups', 'can_update_popups_domains',
+            'valid_until'
+        ));
         $customerUser->customerAccount->save();
 
         return redirect("customer-account/{$customerUser->id}");

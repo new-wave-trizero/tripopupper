@@ -26,11 +26,24 @@ class CustomerAccount extends Model
 
     public function isExpired()
     {
-        if (is_null($this->membership_agency_account_id)) {
+        // First check if agency realted account is expired...
+        if ($this->isAgencyMember()) {
+            if ($this->membershipAgencyAccount->isExpired()) {
+                return true;
+            }
+        }
+
+        // When the account has an expiration date check them...
+        if (! is_null($this->valid_until)) {
             return $this->valid_until->lt(Carbon::now()->setTime(0, 0, 0));
         }
 
-        return $this->membershipAgencyAccount->isExpired();
+        return false;
+    }
+
+    public function isAgencyMember()
+    {
+        return ! is_null($this->membership_agency_account_id);
     }
 
     public function user()

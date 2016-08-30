@@ -18,6 +18,7 @@ class LoginAsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('account.expiration');
     }
 
     /**

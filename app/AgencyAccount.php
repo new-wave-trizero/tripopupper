@@ -15,6 +15,7 @@ class AgencyAccount extends Model
      */
     protected $fillable = [
         'valid_until',
+        'max_member_customers',
     ];
 
     /**
@@ -32,6 +33,17 @@ class AgencyAccount extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function canOwnMoreCustomers()
+    {
+        // Unlimited customers
+        if (is_null($this->max_member_customers)) {
+            return true;
+        }
+
+        // Check current count
+        return $this->ownedCustomerAccounts()->count() < $this->max_member_customers;
     }
 
     public function ownedCustomerAccounts()

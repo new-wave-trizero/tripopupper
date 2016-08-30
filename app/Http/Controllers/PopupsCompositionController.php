@@ -16,7 +16,7 @@ class PopupsCompositionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:manage-agencies');
+        $this->middleware('account.expiration');
     }
 
     /**

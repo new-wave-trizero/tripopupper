@@ -9,6 +9,14 @@
   <div class="panel-body">
     <form method="post" action="{{ url('/customer-account') }}">
       {{ csrf_field() }}
+
+      @if ($errors->has('max_member_customers'))
+        <div class="alert alert-dismissible alert-danger">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          <div>{{ $errors->first('max_member_customers') }}</div>
+        </div>
+      @endif
+
       <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
         <label class="control-label">Nome</label>
         <input name="name" type="text" class="form-control" value="{{ old('name') }}">
@@ -24,13 +32,11 @@
         <input name="password" type="password" class="form-control" value="{{ old('password') }}">
         <span class="help-block">{{ $errors->first('password') }}</span>
       </div>
-      @if (Auth::user()->isAdmin())
-        <div class="form-group{{ $errors->has('valid_until') ? ' has-error' : '' }}">
-          <label class="control-label">Scandenza Account</label>
-          <input name="valid_until" type="date" class="form-control" value="{{ old('valid_until') }}">
-          <span class="help-block">{{ $errors->first('valid_until') }}</span>
-        </div>
-      @endif
+      <div class="form-group{{ $errors->has('valid_until') ? ' has-error' : '' }}">
+        <label class="control-label">Scandenza Account</label>
+        <input name="valid_until" type="date" class="form-control" value="{{ old('valid_until') }}">
+        <span class="help-block">{{ $errors->first('valid_until') }}</span>
+      </div>
       <div class="form-group{{ $errors->has('can_create_popups') ? ' has-error' : '' }}">
         <div class="checkbox">
           <label>
@@ -81,9 +87,7 @@
           <th>Creazione Popup</th>
           <th>Eliminazione Popup</th>
           <th>Modifica Dominio Popup</th>
-          @if (Auth::user()->isAdmin())
-            <th>Scadenza</th>
-          @endif
+          <th>Scadenza</th>
           <th><i class="material-icons">more_vert</i></th>
         </tr>
       </thead>
@@ -113,9 +117,7 @@
                 <i class="material-icons" style="color: red">close</i>
               @endif
             </td>
-            @if (Auth::user()->isAdmin())
-              <td>{{ $customerUser->customerAccount->valid_until->toDateString() }}</td>
-            @endif
+            <td>{{ is_null($customerUser->customerAccount->valid_until) ? 'Illimitato' : $customerUser->customerAccount->valid_until->toDateString() }}</td>
             <td>
               <div class="btn-group-sm">
                 <a href="{{ url('/customer-account/' . $customerUser->id) }}"

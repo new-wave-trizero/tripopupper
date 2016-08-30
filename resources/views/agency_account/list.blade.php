@@ -29,6 +29,15 @@
         <input name="valid_until" type="date" class="form-control" value="{{ old('valid_until') }}">
         <span class="help-block">{{ $errors->first('valid_until') }}</span>
       </div>
+      <div class="form-group{{ $errors->has('max_member_customers') ? ' has-error' : '' }}">
+        <label class="control-label">Pachetto Clienti</label>
+        <select class="form-control" name="max_member_customers">
+          <option value="50" {{ old('max_member_customers') === 50 ? 'selected' : '' }}>50</option>
+          <option value="100" {{ old('max_member_customers') === 100 ? 'selected' : '' }}>100</option>
+          <option value="unlimited" {{ old('max_member_customers') === 'unlimited' ? 'selected' : '' }}>Illimitato</option>
+        </select>
+        <span class="help-block">{{ $errors->first('max_member_customers') }}</span>
+      </div>
       <div class="form-group">
         <button type="submit" class="btn btn-default btn-raised">Crea</button>
       </div>
@@ -47,6 +56,8 @@
           <th>Nome</th>
           <th>Mail</th>
           <th>Scadenza</th>
+          <th>Pacchetto Clienti</th>
+          <th>Numero Clienti</th>
           <th><i class="material-icons">more_vert</i></th>
         </tr>
       </thead>
@@ -56,6 +67,8 @@
             <td>{{ $agencyUser->name }}</td>
             <td>{{ $agencyUser->email }}</td>
             <td>{{ $agencyUser->agencyAccount->valid_until->toDateString() }}</td>
+            <td>{{ $agencyUser->agencyAccount->max_member_customers or 'Illimitato' }}</td>
+            <td>{{ $agencyUser->agencyAccount->member_customers_count }}</td>
             <td>
               <div class="btn-group-sm">
                 @can('login-as-another-user', $agencyUser)
