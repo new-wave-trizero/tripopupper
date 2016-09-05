@@ -23,6 +23,25 @@ return [
         'take_last' => 10,
     ],
 
+    'member_customers_packages' => [
+        [
+            'name'  => 3,
+            'value' => 3,
+        ],
+        [
+            'name'  => 50,
+            'value' => 50,
+        ],
+        [
+            'name'  => 100,
+            'value' => 100,
+        ],
+        [
+            'name'  => 'Illimitato',
+            'value' => 'unlimited',
+        ],
+    ],
+
     // The suggestor config
     'suggestor' => [
         'groups' => [

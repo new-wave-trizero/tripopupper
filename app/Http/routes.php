@@ -18,7 +18,7 @@ Route::put('profile', 'ProfileController@updateProfile');
 Route::put('profile/password', 'ProfileController@updatePassword');
 
 Route::resource('agency-account', 'AgencyAccountController', ['only' => [
-    'index', 'store', 'destroy',
+    'index', 'store', 'destroy', 'show', 'update',
 ]]);
 Route::resource('admin-account', 'AdminAccountController', ['only' => [
     'index', 'store', 'destroy',

@@ -32,9 +32,9 @@
       <div class="form-group{{ $errors->has('max_member_customers') ? ' has-error' : '' }}">
         <label class="control-label">Pachetto Clienti</label>
         <select class="form-control" name="max_member_customers">
-          <option value="50" {{ old('max_member_customers') === 50 ? 'selected' : '' }}>50</option>
-          <option value="100" {{ old('max_member_customers') === 100 ? 'selected' : '' }}>100</option>
-          <option value="unlimited" {{ old('max_member_customers') === 'unlimited' ? 'selected' : '' }}>Illimitato</option>
+          @foreach ($memberCustomersPackages as $package)
+            <option value="{{ $package['value'] }}" {{ old('max_member_customers') == $package['value'] ? 'selected' : '' }}>{{ $package['name'] }}</option>
+          @endforeach
         </select>
         <span class="help-block">{{ $errors->first('max_member_customers') }}</span>
       </div>
@@ -71,6 +71,11 @@
             <td>{{ $agencyUser->agencyAccount->member_customers_count }}</td>
             <td>
               <div class="btn-group-sm">
+                <a href="{{ url('/agency-account/' . $agencyUser->id) }}"
+                   class="btn btn-info btn-fab btn-fab-mini"
+                   title="Modifica agenzia {{ $agencyUser->name }}">
+                  <i class="material-icons">mode_edit</i>
+                </a>
                 @can('login-as-another-user', $agencyUser)
                   <form style="display:inline" method="POST" action="{{ url('/login-as/' . $agencyUser->id) }}">
                     {{ csrf_field() }}

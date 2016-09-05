@@ -141,8 +141,6 @@ class CustomerAccountController extends Controller
         $customerUser->fill([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => bcrypt($request->get('password')),
-            'account_type' => 'customer',
         ]);
         $customerUser->save();
 
