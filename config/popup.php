@@ -25,10 +25,6 @@ return [
 
     'member_customers_packages' => [
         [
-            'name'  => 3,
-            'value' => 3,
-        ],
-        [
             'name'  => 50,
             'value' => 50,
         ],
