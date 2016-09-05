@@ -21,7 +21,7 @@ Route::resource('agency-account', 'AgencyAccountController', ['only' => [
     'index', 'store', 'destroy', 'show', 'update',
 ]]);
 Route::resource('admin-account', 'AdminAccountController', ['only' => [
-    'index', 'store', 'destroy',
+    'index', 'store', 'destroy', 'show', 'update',
 ]]);
 Route::resource('customer-account', 'CustomerAccountController', ['only' => [
     'index', 'store', 'destroy', 'show', 'update',

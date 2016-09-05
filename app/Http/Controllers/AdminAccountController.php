@@ -59,6 +59,48 @@ class AdminAccountController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $adminUser = User::admin()->notMe()->findOrFail($id);
+
+        $popups = $adminUser->popups;
+
+        return view('admin_account.show', compact('adminUser', 'popups'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $adminUser = User::admin()->notMe()->findOrFail($id);
+
+        $rules = [
+            'name'  => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $adminUser->id,
+        ];
+
+        $this->validate($request, $rules);
+
+        $adminUser->fill([
+            'name'  => $request->get('name'),
+            'email' => $request->get('email'),
+        ]);
+        $adminUser->save();
+
+        return redirect("admin-account/{$adminUser->id}");
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request  $request

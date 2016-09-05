@@ -51,6 +51,11 @@
             <td>{{ $adminUser->email }}</td>
             <td>
               <div class="btn-group-sm">
+                <a href="{{ url('/admin-account/' . $adminUser->id) }}"
+                   class="btn btn-info btn-fab btn-fab-mini"
+                   title="Modifica amministratore {{ $adminUser->name }}">
+                  <i class="material-icons">mode_edit</i>
+                </a>
                 @can('login-as-another-user', $adminUser)
                   <form style="display:inline" method="POST" action="{{ url('/login-as/' . $adminUser->id) }}">
                     {{ csrf_field() }}
